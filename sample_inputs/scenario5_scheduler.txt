@@ -1,0 +1,10 @@
+3
+create 101 102 103
+insert_begin 99
+insert_end 104
+delete_begin
+delete_pos 2
+display
+count
+back
+6

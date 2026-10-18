@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.root": "/web",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
+  "liveServer.settings.file": "index.html"
+}

@@ -1,0 +1,12 @@
+1
+delete_begin
+delete_end
+delete_pos 1
+insert_pos 99 5
+insert_pos 99 -1
+insert_begin 42
+reverse
+delete_begin
+search 100
+back
+6

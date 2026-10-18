@@ -1,0 +1,11 @@
+# Compiled Java classes
+bin/
+*.class
+
+# Vercel deployment cache
+.vercel/
+web/.vercel/
+
+# Temporary / OS files
+Thumbs.db
+.DS_Store

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Linked List Visualizer | Side-by-Side C Code Stepper</title>
+  <meta name="description" content="Side-by-side interactive linked list visualizer and synchronized C code stepper.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge">
+        <span class="logo-icon">🔗</span>
+        <span class="logo-accent">C + DSA</span>
+      </div>
+      <div>
+        <h1 class="app-title">Linked List Side-by-Side Visualizer</h1>
+        <p class="app-subtitle">Visual Pointer Mechanics (Left) &bull; Synchronized C Code (Right)</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span id="current-list-badge" class="badge-tag">Singly Linked List</span>
+      </div>
+      <button id="theme-demo-btn" class="btn btn-secondary btn-sm" onclick="runPresetDemo(1)">
+        ⚡ Quick Demo
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    
+    <!-- Top Navigation / List Selector -->
+    <section class="list-selector-bar">
+      <div class="tabs-group" role="tablist">
+        <button id="tab-singly" class="tab-btn active" onclick="switchListType('singly')">
+          <span class="tab-icon">⛓️</span>
+          <span class="tab-label">Singly Linked List</span>
+          <span class="badge-mini">1-Way</span>
+        </button>
+        <button id="tab-doubly" class="tab-btn" onclick="switchListType('doubly')">
+          <span class="tab-icon">⇄</span>
+          <span class="tab-label">Doubly Linked List</span>
+          <span class="badge-mini">2-Way</span>
+        </button>
+        <button id="tab-circular" class="tab-btn" onclick="switchListType('circular')">
+          <span class="tab-icon">🔄</span>
+          <span class="tab-label">Circular Linked List</span>
+          <span class="badge-mini">Loop</span>
+        </button>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="metrics-strip">
+        <div class="metric-item">
+          <span class="metric-label">Nodes</span>
+          <span id="metric-count" class="metric-val">0</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-label">HEAD</span>
+          <span id="metric-head" class="metric-val">NULL</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-label">TAIL</span>
+          <span id="metric-tail" class="metric-val">NULL</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-label">Complexity</span>
+          <span id="metric-complexity" class="metric-val text-cyan">O(1)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Operations Toolbar Deck -->
+    <section class="operations-toolbar-deck">
+      <div class="toolbar-header">
+        <span class="toolbar-title">🎮 Operations Toolbar</span>
+        <div class="scenario-chips-row">
+          <span class="chips-label">Presets:</span>
+          <button class="btn btn-chip" onclick="runPresetDemo(1)">SLL Lifecycle</button>
+          <button class="btn btn-chip" onclick="runPresetDemo(2)">DLL Bidirectional</button>
+          <button class="btn btn-chip" onclick="runPresetDemo(3)">CLL Loop</button>
+          <button class="btn btn-chip" onclick="runPresetDemo(4)">Edge Cases</button>
+          <button class="btn btn-chip" onclick="runPresetDemo(5)">CPU Scheduler</button>
+        </div>
+      </div>
+
+      <div class="toolbar-grid">
+        <!-- 1. Bulk Populate -->
+        <div class="tool-group">
+          <span class="tool-group-label">Bulk Create</span>
+          <div class="tool-inline-inputs">
+            <input type="text" id="input-create-vals" placeholder="10, 20, 30" value="10, 20, 30" style="width: 130px;">
+            <button id="btn-create" class="btn btn-primary btn-sm" onclick="handleCreate()">Create</button>
+          </div>
+        </div>
+
+        <!-- 2. Insertions -->
+        <div class="tool-group">
+          <span class="tool-group-label">Insertions</span>
+          <div class="tool-inline-inputs">
+            <div class="mini-input-pair">
+              <input type="number" id="input-insert-begin" value="5" placeholder="Val" style="width: 58px;">
+              <button id="btn-insert-begin" class="btn btn-success btn-sm" onclick="handleInsertBegin()">Head +</button>
+            </div>
+            <div class="mini-input-pair">
+              <input type="number" id="input-insert-end" value="40" placeholder="Val" style="width: 58px;">
+              <button id="btn-insert-end" class="btn btn-success btn-sm" onclick="handleInsertEnd()">Tail +</button>
+            </div>
+            <div class="mini-input-pair">
+              <input type="number" id="input-insert-pos-val" value="25" placeholder="Val" style="width: 52px;">
+              <input type="number" id="input-insert-pos-idx" value="2" placeholder="Pos" min="1" style="width: 44px;">
+              <button id="btn-insert-pos" class="btn btn-success btn-sm" onclick="handleInsertPos()">Pos +</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Deletions -->
+        <div class="tool-group">
+          <span class="tool-group-label">Deletions</span>
+          <div class="tool-inline-inputs">
+            <button id="btn-delete-begin" class="btn btn-danger btn-sm" onclick="handleDeleteBegin()">Del Head</button>
+            <button id="btn-delete-end" class="btn btn-danger btn-sm" onclick="handleDeleteEnd()">Del Tail</button>
+            <div class="mini-input-pair">
+              <input type="number" id="input-delete-pos-idx" value="2" placeholder="Pos" min="1" style="width: 44px;">
+              <button id="btn-delete-pos" class="btn btn-danger btn-sm" onclick="handleDeletePos()">Del Pos</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Query & Special Actions -->
+        <div class="tool-group">
+          <span class="tool-group-label">Query & Actions</span>
+          <div class="tool-inline-inputs">
+            <div class="mini-input-pair">
+              <input type="number" id="input-search-val" value="20" placeholder="Val" style="width: 58px;">
+              <button id="btn-search" class="btn btn-accent btn-sm" onclick="handleSearch()">Search</button>
+            </div>
+            <button id="btn-reverse" class="btn btn-purple btn-sm" onclick="handleReverse()">In-Place Reverse</button>
+            <button id="btn-display-backward" class="btn btn-outline btn-sm" onclick="handleDisplayBackward()">Backward</button>
+            <button id="btn-clear-list" class="btn btn-danger-outline btn-sm" onclick="handleClearList()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIDE-BY-SIDE HERO WORKSPACE: WORKINGS (LEFT) + C CODE STEPPER (RIGHT) -->
+    <section class="side-by-side-arena">
+      
+      <!-- LEFT COLUMN: THE WORKINGS (VISUALIZER STAGE) -->
+      <div class="workings-column panel-card">
+        <div class="panel-header">
+          <div class="stage-title-wrap">
+            <span class="col-badge col-badge-cyan">Step 1/2</span>
+            <h2 id="stage-list-name" class="stage-title">Visual Node Workings</h2>
+          </div>
+          <span id="operation-toast" class="operation-toast">Ready</span>
+        </div>
+
+        <!-- Playback Controller Bar -->
+        <div class="playback-bar">
+          <div class="playback-buttons">
+            <button id="btn-step-prev" class="btn btn-playback" onclick="prevStep()" title="Go to previous step">
+              ⏮ Prev
+            </button>
+            <button id="btn-play-pause" class="btn btn-playback-play" onclick="togglePlayPause()" title="Play/Pause animation">
+              ▶ Play
+            </button>
+            <button id="btn-step-next" class="btn btn-playback" onclick="nextStep()" title="Go to next step">
+              Next ⏭
+            </button>
+          </div>
+
+          <div class="step-counter-box">
+            <span id="step-progress-text" class="step-number">Step 0 / 0</span>
+          </div>
+
+          <div class="speed-control-group">
+            <span class="speed-label">Speed:</span>
+            <input type="range" id="speed-slider" min="300" max="2000" step="100" value="1000" onchange="updatePlaybackSpeed(this.value)">
+            <span id="speed-display" class="speed-val">1.0s</span>
+          </div>
+        </div>
+
+        <!-- Live Plain-English Step Explanation Card -->
+        <div id="step-explanation-box" class="step-explanation-box">
+          <div class="explanation-icon">💡</div>
+          <div class="explanation-text-wrap">
+            <span class="explanation-header" id="step-title">Welcome to Side-by-Side Visualization</span>
+            <p class="explanation-desc" id="step-desc">Choose any operation above to watch the pointers rewire on the left while the exact line of C code executes on the right!</p>
+          </div>
+        </div>
+
+        <!-- Visual Viewport Canvas -->
+        <div id="visualizer-viewport" class="visualizer-viewport">
+          <!-- Floating Node Stage (e.g. newly allocated node before linking) -->
+          <div id="floating-node-area" class="floating-node-area"></div>
+          <!-- Dynamic Nodes & Arrows rendered via JavaScript -->
+          <div id="node-chain-container" class="node-chain-container"></div>
+        </div>
+
+        <!-- Collapsible Terminal ASCII Text Preview -->
+        <div class="ascii-preview-drawer">
+          <div class="ascii-header">
+            <span>Terminal ASCII Art View</span>
+            <button class="btn-text-only" onclick="toggleAsciiDrawer()">Toggle ASCII</button>
+          </div>
+          <pre id="ascii-canvas" class="ascii-canvas">HEAD -> NULL</pre>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: THE C PROGRAM CODE STEPPER -->
+      <div class="code-column panel-card">
+        <div class="panel-header">
+          <div class="stage-title-wrap">
+            <span class="col-badge col-badge-purple">C Stepper</span>
+            <h3 id="c-function-title" class="stage-title">main.c &bull; insert_begin()</h3>
+          </div>
+          <span class="lang-tag">C Language (ISO C99)</span>
+        </div>
+
+        <!-- Code Stepper Viewport with Line Highlighting -->
+        <div class="code-viewport-container">
+          <div id="c-code-container" class="c-code-container">
+            <!-- Populated dynamically with highlighted lines -->
+          </div>
+        </div>
+
+        <!-- Live Memory & Variable Watcher Grid -->
+        <div class="variable-watch-card">
+          <div class="var-watch-header">
+            <span>🔍 Memory & Pointer Watcher</span>
+            <span class="var-watch-subtitle">Live Heap / Stack State</span>
+          </div>
+          <div class="var-watch-grid" id="var-watch-grid">
+            <div class="var-box">
+              <span class="var-name">*head:</span>
+              <span class="var-val" id="watch-head">NULL</span>
+            </div>
+            <div class="var-box">
+              <span class="var-name">curr:</span>
+              <span class="var-val" id="watch-curr">NULL</span>
+            </div>
+            <div class="var-box">
+              <span class="var-name">newNode:</span>
+              <span class="var-val" id="watch-newnode">NULL</span>
+            </div>
+            <div class="var-box">
+              <span class="var-name">temp / prev:</span>
+              <span class="var-val" id="watch-temp">NULL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Reference & Complexity Cards -->
+    <section class="reference-section">
+      <div class="ref-card">
+        <h4>Singly Linked List in C</h4>
+        <p>Nodes created dynamically using <code>malloc()</code>. Each node stores data and a <code>next</code> pointer, terminated with <code>NULL</code>.</p>
+        <div class="pill-group">
+          <span class="pill">Insert Head: O(1)</span>
+          <span class="pill">Insert Tail: O(n)</span>
+          <span class="pill">Delete Head: O(1)</span>
+          <span class="pill">Delete Tail: O(n)</span>
+        </div>
+      </div>
+
+      <div class="ref-card">
+        <h4>Doubly Linked List in C</h4>
+        <p>Bidirectional chain with <code>prev</code> and <code>next</code> pointers. Enables $O(1)$ deletions at the tail when maintaining a tail pointer.</p>
+        <div class="pill-group">
+          <span class="pill">Insert Head: O(1)</span>
+          <span class="pill">Insert Tail: O(1)</span>
+          <span class="pill">Delete Head: O(1)</span>
+          <span class="pill">Delete Tail: O(1)</span>
+        </div>
+      </div>
+
+      <div class="ref-card">
+        <h4>Circular Linked List in C</h4>
+        <p>Ring topology where <code>tail-&gt;next == head</code>. No NULL pointers. Traversal cycles endlessly through the chain.</p>
+        <div class="pill-group">
+          <span class="pill">Insert Head: O(1)</span>
+          <span class="pill">Insert Tail: O(1)</span>
+          <span class="pill">Delete Head: O(1)</span>
+          <span class="pill">Delete Tail: O(n)</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast-banner" class="toast-banner"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

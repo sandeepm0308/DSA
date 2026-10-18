@@ -1,0 +1,14 @@
+1
+create 10 20 30
+insert_begin 5
+insert_end 40
+insert_pos 25 4
+search 25
+delete_pos 4
+delete_begin
+delete_end
+reverse
+count
+display
+back
+6
